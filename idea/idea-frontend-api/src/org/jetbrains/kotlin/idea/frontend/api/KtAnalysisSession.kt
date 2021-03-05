@@ -38,7 +38,8 @@ abstract class KtAnalysisSession(final override val token: ValidityToken) : Vali
     KtExpressionInfoProviderMixIn,
     KtSymbolsMixIn,
     KtReferenceResolveMixIn,
-    KtReferenceShortenerMixIn {
+    KtReferenceShortenerMixIn,
+    KtSymbolDeclarationRendererMixIn {
 
     override val analysisSession: KtAnalysisSession get() = this
 
@@ -75,6 +76,9 @@ abstract class KtAnalysisSession(final override val token: ValidityToken) : Vali
     @Suppress("LeakingThis")
     protected open val typeRendererImpl: KtTypeRenderer = KtDefaultTypeRenderer(this, token)
     internal val typeRenderer: KtTypeRenderer get() = typeRendererImpl
+
+    internal val symbolDeclarationRendererProvider: KtSymbolDeclarationRendererProvider get() = symbolDeclarationRendererProviderImpl
+    protected abstract val symbolDeclarationRendererProviderImpl: KtSymbolDeclarationRendererProvider
 
     internal val expressionTypeProvider: KtExpressionTypeProvider get() = expressionTypeProviderImpl
     protected abstract val expressionTypeProviderImpl: KtExpressionTypeProvider
