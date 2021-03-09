@@ -66,6 +66,8 @@ struct ObjHeader {
       return createMetaObject(this);
   }
 
+  MetaObjHeader* meta_object_or_null() const noexcept { return AsMetaObject(typeInfoOrMeta_); }
+
   ALWAYS_INLINE ObjHeader** GetWeakCounterLocation();
 
 #ifdef KONAN_OBJC_INTEROP
@@ -89,6 +91,9 @@ struct ObjHeader {
   }
 
   inline bool heap() const { return getPointerBits(typeInfoOrMeta_, OBJECT_TAG_MASK) == 0; }
+
+  bool hasWeakReferenceCounter() const noexcept;
+  void clearWeakReferenceCounter() noexcept;
 
   static MetaObjHeader* createMetaObject(ObjHeader* object);
   static void destroyMetaObject(ObjHeader* object);

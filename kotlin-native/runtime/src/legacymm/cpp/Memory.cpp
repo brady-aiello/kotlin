@@ -1188,6 +1188,7 @@ ALWAYS_INLINE void runDeallocationHooks(ContainerHeader* container) {
 #if USE_CYCLE_DETECTOR
     CycleDetector::removeCandidateIfNeeded(obj);
 #endif  // USE_CYCLE_DETECTOR
+    obj->clearWeakReferenceCounter();
     kotlin::RunFinalizers(obj);
     obj = reinterpret_cast<ObjHeader*>(reinterpret_cast<uintptr_t>(obj) + objectSize(obj));
   }
@@ -3104,6 +3105,22 @@ OBJ_GETTER(findCycle, KRef root) {
 
 }  // namespace
 
+ALWAYS_INLINE bool ObjHeader::hasWeakReferenceCounter() const noexcept {
+    if (auto* meta = meta_object_or_null()) {
+        return meta->WeakReference.counter_ != nullptr;
+    }
+    return false;
+}
+
+ALWAYS_INLINE void ObjHeader::clearWeakReferenceCounter() noexcept {
+    if (auto* meta = meta_object_or_null()) {
+        if (meta->WeakReference.counter_ != nullptr) {
+            WeakReferenceCounterClear(meta->WeakReference.counter_);
+            ZeroHeapRef(&meta->WeakReference.counter_);
+        }
+    }
+}
+
 MetaObjHeader* ObjHeader::createMetaObject(ObjHeader* object) {
   TypeInfo** location = &object->typeInfoOrMeta_;
   TypeInfo* typeInfo = *location;
@@ -3135,10 +3152,7 @@ void ObjHeader::destroyMetaObject(ObjHeader* object) {
   TypeInfo** location = &object->typeInfoOrMeta_;
   MetaObjHeader* meta = clearPointerBits(*(reinterpret_cast<MetaObjHeader**>(location)), OBJECT_TAG_MASK);
   *const_cast<const TypeInfo**>(location) = meta->typeInfo_;
-  if (meta->WeakReference.counter_ != nullptr) {
-    WeakReferenceCounterClear(meta->WeakReference.counter_);
-    ZeroHeapRef(&meta->WeakReference.counter_);
-  }
+  RuntimeAssert(!object->hasWeakReferenceCounter(), "Object %p should have cleared the weak reference", object);
 
 #ifdef KONAN_OBJC_INTEROP
   Kotlin_ObjCExport_releaseAssociatedObject(meta->associatedObject_);
