@@ -209,6 +209,10 @@ private:
 template <size_t ElementCount>
 class ObjectArray : public internal::Array<ObjHeader*, ElementCount> {
 public:
+    static ObjectArray<ElementCount>& FromArrayHeader(ArrayHeader* arr) noexcept {
+        return static_cast<ObjectArray<ElementCount>&>(internal::Array<ObjHeader*, ElementCount>::FromArrayHeader(arr));
+    }
+
     ObjectArray() noexcept : internal::Array<ObjHeader*, ElementCount>(theArrayTypeInfo) {}
 };
 
@@ -227,6 +231,10 @@ public:
 template <size_t ElementCount>
 class CharArray : public internal::Array<KChar, ElementCount> {
 public:
+    static CharArray<ElementCount>& FromArrayHeader(ArrayHeader* arr) noexcept {
+        return static_cast<CharArray<ElementCount>&>(internal::Array<KChar, ElementCount>::FromArrayHeader(arr));
+    }
+
     CharArray() noexcept : internal::Array<KChar, ElementCount>(theCharArrayTypeInfo) {}
 };
 
