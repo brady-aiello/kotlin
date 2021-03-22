@@ -1,4 +1,4 @@
-description = "Atomicfu Runtime"
+description = "Runtime library for the Atomicfu compiler plugin"
 
 plugins {
     kotlin("js")
@@ -29,4 +29,8 @@ publishing {
             from(components["kotlin"])
         }
     }
+}
+
+publish {
+    artifactId = "kotlinx-atomicfu-runtime"
 }
