@@ -29588,12 +29588,6 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
             }
 
             @Test
-            @TestMetadata("unsignedLiteralsOn1_2.kt")
-            public void testUnsignedLiteralsOn1_2() throws Exception {
-                runTest("compiler/testData/diagnostics/tests/unsignedTypes/unsignedLiteralsOn1_2.kt");
-            }
-
-            @Test
             @TestMetadata("unsignedLiteralsOverflowSignedBorder.kt")
             public void testUnsignedLiteralsOverflowSignedBorder() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/unsignedTypes/unsignedLiteralsOverflowSignedBorder.kt");
