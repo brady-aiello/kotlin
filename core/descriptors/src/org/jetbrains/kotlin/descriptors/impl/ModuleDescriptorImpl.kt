@@ -38,6 +38,7 @@ class ModuleDescriptorImpl @JvmOverloads constructor(
     override val stableName: Name? = null,
 ) : DeclarationDescriptorImpl(Annotations.EMPTY, moduleName), ModuleDescriptor {
     private val capabilities: Map<ModuleCapability<*>, Any?>
+    private val packageViewDescriptorAccessor: PackageViewDescriptorAccessor
 
     init {
         if (!moduleName.isSpecial) {
@@ -46,6 +47,7 @@ class ModuleDescriptorImpl @JvmOverloads constructor(
         this.capabilities = capabilities.toMutableMap()
         @OptIn(TypeRefinement::class)
         this.capabilities[REFINER_CAPABILITY] = Ref(null)
+        packageViewDescriptorAccessor = getCapability(PackageViewDescriptorAccessor.CAPABILITY) ?: PackageViewDescriptorAccessor.Default
     }
 
     private var dependencies: ModuleDependencies? = null
@@ -63,8 +65,8 @@ class ModuleDescriptorImpl @JvmOverloads constructor(
         }
     }
 
-    private val packages = storageManager.createMemoizedFunction<FqName, PackageViewDescriptor> { fqName: FqName ->
-        LazyPackageViewDescriptorImpl(this, fqName, storageManager)
+    private val packages = storageManager.createMemoizedFunction { fqName: FqName ->
+        packageViewDescriptorAccessor.compute(this, fqName, storageManager)
     }
 
     @Deprecated("This method is not going to be supported. Please do not use it")
