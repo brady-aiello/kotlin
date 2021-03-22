@@ -12,7 +12,7 @@ class WholeProjectPerformanceComparisonFirImplTest : AbstractWholeProjectPerform
     override fun getWarmUpProject(): WarmUpProject = warmUpProject
 
     fun testRustPluginHighlighting() = doTestRustPluginHighlighting()
-    fun testRustPluginCompletion() = doTestRustPluginCompletion()
+//    fun testRustPluginCompletion() = doTestRustPluginCompletion()
 
     companion object {
         private val hwStats: Stats = Stats("FIR warmup project")
