@@ -88,14 +88,14 @@ void mm::SingleThreadMarkAndSweep::PerformFullGC() noexcept {
     for (auto& thread : mm::GlobalData::Instance().threadRegistry().Iter()) {
         thread.Publish();
         for (auto* object : mm::ThreadRootSet(thread)) {
-            if (isValidReference(object)) {
+            if (!isNullOrMarker(object)) {
                 graySet.push_back(object);
             }
         }
     }
     mm::StableRefRegistry::Instance().ProcessDeletions();
     for (auto* object : mm::GlobalRootSet()) {
-        if (isValidReference(object)) {
+        if (!isNullOrMarker(object)) {
             graySet.push_back(object);
         }
     }

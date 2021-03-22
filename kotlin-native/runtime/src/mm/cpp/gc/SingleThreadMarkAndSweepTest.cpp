@@ -176,7 +176,7 @@ private:
 } // namespace
 
 TEST_F(SingleThreadMarkAndSweepTest, RootSet) {
-    mm::RunInNewThread([](mm::ThreadData& threadData) {
+    RunInNewThread([](mm::ThreadData& threadData) {
         GlobalObjectHolder global1{threadData};
         GlobalObjectArrayHolder global2{threadData};
         GlobalCharArrayHolder global3{threadData};
@@ -205,7 +205,7 @@ TEST_F(SingleThreadMarkAndSweepTest, RootSet) {
 }
 
 TEST_F(SingleThreadMarkAndSweepTest, InterconnectedRootSet) {
-    mm::RunInNewThread([](mm::ThreadData& threadData) {
+    RunInNewThread([](mm::ThreadData& threadData) {
         GlobalObjectHolder global1{threadData};
         GlobalObjectArrayHolder global2{threadData};
         GlobalCharArrayHolder global3{threadData};
@@ -245,7 +245,7 @@ TEST_F(SingleThreadMarkAndSweepTest, InterconnectedRootSet) {
 }
 
 TEST_F(SingleThreadMarkAndSweepTest, FreeObjects) {
-    mm::RunInNewThread([](mm::ThreadData& threadData) {
+    RunInNewThread([](mm::ThreadData& threadData) {
         auto& object1 = AllocateObject(threadData);
         auto& object2 = AllocateObject(threadData);
 
@@ -260,7 +260,7 @@ TEST_F(SingleThreadMarkAndSweepTest, FreeObjects) {
 }
 
 TEST_F(SingleThreadMarkAndSweepTest, FreeObjectsWithFinalizers) {
-    mm::RunInNewThread([this](mm::ThreadData& threadData) {
+    RunInNewThread([this](mm::ThreadData& threadData) {
         auto& object1 = AllocateObjectWithFinalizer(threadData);
         auto& object2 = AllocateObjectWithFinalizer(threadData);
 
@@ -277,7 +277,7 @@ TEST_F(SingleThreadMarkAndSweepTest, FreeObjectsWithFinalizers) {
 }
 
 TEST_F(SingleThreadMarkAndSweepTest, ObjectReferencedFromRootSet) {
-    mm::RunInNewThread([](mm::ThreadData& threadData) {
+    RunInNewThread([](mm::ThreadData& threadData) {
         GlobalObjectHolder global{threadData};
         StackObjectHolder stack{threadData};
         auto& object1 = AllocateObject(threadData);
@@ -317,7 +317,7 @@ TEST_F(SingleThreadMarkAndSweepTest, ObjectReferencedFromRootSet) {
 }
 
 TEST_F(SingleThreadMarkAndSweepTest, ObjectsWithCycles) {
-    mm::RunInNewThread([](mm::ThreadData& threadData) {
+    RunInNewThread([](mm::ThreadData& threadData) {
         GlobalObjectHolder global{threadData};
         StackObjectHolder stack{threadData};
         auto& object1 = AllocateObject(threadData);
@@ -366,7 +366,7 @@ TEST_F(SingleThreadMarkAndSweepTest, ObjectsWithCycles) {
 }
 
 TEST_F(SingleThreadMarkAndSweepTest, ObjectsWithCyclesAndFinalizers) {
-    mm::RunInNewThread([this](mm::ThreadData& threadData) {
+    RunInNewThread([this](mm::ThreadData& threadData) {
         GlobalObjectHolder global{threadData};
         StackObjectHolder stack{threadData};
         auto& object1 = AllocateObjectWithFinalizer(threadData);
@@ -417,7 +417,7 @@ TEST_F(SingleThreadMarkAndSweepTest, ObjectsWithCyclesAndFinalizers) {
 }
 
 TEST_F(SingleThreadMarkAndSweepTest, ObjectsWithCyclesIntoRootSet) {
-    mm::RunInNewThread([](mm::ThreadData& threadData) {
+    RunInNewThread([](mm::ThreadData& threadData) {
         GlobalObjectHolder global{threadData};
         StackObjectHolder stack{threadData};
         auto& object1 = AllocateObject(threadData);
@@ -445,7 +445,7 @@ TEST_F(SingleThreadMarkAndSweepTest, ObjectsWithCyclesIntoRootSet) {
 }
 
 TEST_F(SingleThreadMarkAndSweepTest, ObjectsRunGCTwice) {
-    mm::RunInNewThread([](mm::ThreadData& threadData) {
+    RunInNewThread([](mm::ThreadData& threadData) {
         GlobalObjectHolder global{threadData};
         StackObjectHolder stack{threadData};
         auto& object1 = AllocateObject(threadData);

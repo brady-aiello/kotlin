@@ -23,7 +23,7 @@ void Mark(KStdVector<ObjHeader*> graySet) noexcept {
         ObjHeader* top = graySet.back();
         graySet.pop_back();
 
-        RuntimeAssert(isValidReference(top), "Got invalid reference %p in gray set", top);
+        RuntimeAssert(!isNullOrMarker(top), "Got invalid reference %p in gray set", top);
         RuntimeAssert(!top->local(), "TODO: Stack objects are not supported yet, top=%p", top);
 
         if (top->heap()) {
@@ -33,14 +33,14 @@ void Mark(KStdVector<ObjHeader*> graySet) noexcept {
         }
 
         traverseReferredObjects(top, [&graySet](ObjHeader* field) noexcept {
-            if (isValidReference(field)) {
+            if (!isNullOrMarker(field)) {
                 graySet.push_back(field);
             }
         });
 
         if (auto* extraObjectData = mm::ExtraObjectData::GetOrNull(top)) {
             auto* weakCounter = *extraObjectData->GetWeakCounterLocation();
-            if (isValidReference(weakCounter)) {
+            if (!isNullOrMarker(weakCounter)) {
                 graySet.push_back(weakCounter);
             }
         }
