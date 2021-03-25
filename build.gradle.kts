@@ -359,6 +359,7 @@ val gradlePluginProjects = listOf(
     ":kotlin-gradle-plugin",
     ":kotlin-gradle-plugin-api",
     ":kotlin-allopen",
+    ":kotlin-allprivate",
     ":kotlin-annotation-processing-gradle",
     ":kotlin-noarg",
     ":kotlin-sam-with-receiver",
@@ -881,6 +882,7 @@ tasks {
     register("miscIdeTests") {
         dependsOn(
             ":kotlin-allopen-compiler-plugin:test",
+            ":kotlin-allprivate-compiler-plugin:test",
             ":kotlin-noarg-compiler-plugin:test",
             ":kotlin-sam-with-receiver-compiler-plugin:test",
             ":plugins:uast-kotlin:test",
@@ -959,6 +961,7 @@ tasks {
             dependsOn(
                 ":prepare:ide-plugin-dependencies:android-extensions-compiler-plugin-for-ide:publish",
                 ":prepare:ide-plugin-dependencies:allopen-compiler-plugin-for-ide:publish",
+                ":prepare:ide-plugin-dependencies:allprivate-compiler-plugin-for-ide:publish",
                 ":prepare:ide-plugin-dependencies:incremental-compilation-impl-tests-for-ide:publish",
                 ":prepare:ide-plugin-dependencies:kotlin-build-common-tests-for-ide:publish",
                 ":prepare:ide-plugin-dependencies:kotlin-compiler-for-ide:publish",

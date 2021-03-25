@@ -140,6 +140,7 @@ val libraryProjects = listOf(
     ":kotlin-util-klib",
     ":kotlin-util-klib-metadata",
     ":kotlin-allopen-compiler-plugin",
+    ":kotlin-allprivate-compiler-plugin",
     ":kotlin-noarg-compiler-plugin",
     ":kotlin-sam-with-receiver-compiler-plugin",
     ":plugins:android-extensions-compiler",

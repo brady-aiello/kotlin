@@ -25,6 +25,7 @@ import java.nio.file.Path
 
 val kotlinGradlePluginAndItsRequired = arrayOf(
     ":kotlin-allopen",
+    ":kotlin-allprivate",
     ":kotlin-noarg",
     ":kotlin-sam-with-receiver",
     ":kotlin-android-extensions",

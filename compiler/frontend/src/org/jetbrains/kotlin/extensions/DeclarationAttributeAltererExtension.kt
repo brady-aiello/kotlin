@@ -19,6 +19,7 @@ package org.jetbrains.kotlin.extensions
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.descriptors.Modality
+import org.jetbrains.kotlin.descriptors.Visibility
 import org.jetbrains.kotlin.psi.KtModifierListOwner
 import org.jetbrains.kotlin.resolve.BindingContext
 
@@ -27,6 +28,17 @@ interface DeclarationAttributeAltererExtension {
         "org.jetbrains.kotlin.declarationAttributeAltererExtension",
         DeclarationAttributeAltererExtension::class.java
     )
+
+    /**
+     * Returns the new modality for the [declaration], or null if the [currentVisibility] is good enough.
+     */
+    fun refineDeclarationVisibility(
+        modifierListOwner: KtModifierListOwner,
+        declaration: DeclarationDescriptor?,
+        containingDeclaration: DeclarationDescriptor?,
+        currentVisibility: Visibility,
+        isImplicitVisibility: Boolean
+    ): Visibility? = null
 
     /**
      * Returns the new modality for the [declaration], or null if the [currentModality] is good enough.

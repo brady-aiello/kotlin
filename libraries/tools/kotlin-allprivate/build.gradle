@@ -1,0 +1,53 @@
+apply plugin: 'kotlin'
+apply plugin: 'jps-compatible'
+
+configurePublishing(project)
+
+pill {
+    variant = 'FULL'
+}
+
+dependencies {
+    compile project(':kotlin-gradle-plugin-api')
+    compile project(':kotlin-gradle-plugin-model')
+
+    compile kotlinStdlib()
+    compileOnly project(path: ':kotlin-compiler-embeddable', configuration: 'runtimeJar')
+    compileOnly project(':kotlin-allprivate-compiler-plugin')
+
+    compileOnly gradleApi()
+
+    testCompile gradleApi()
+    testCompile "junit:junit:4.12"
+
+    embedded(project(":kotlin-allprivate-compiler-plugin")) { transitive = false }
+}
+
+tasks.withType(project.compileKotlin.class) {
+    kotlinOptions.languageVersion = "1.3"
+    kotlinOptions.apiVersion = "1.3"
+    kotlinOptions.freeCompilerArgs += [
+            "-Xskip-prerelease-check", "-Xskip-runtime-version-check", "-Xsuppress-version-warnings"
+    ]
+}
+
+jar {
+    manifestAttributes(manifest, project)
+}
+
+ArtifactsKt.runtimeJar(project, EmbeddableKt.rewriteDefaultJarDepsToShadedCompiler(project, {}), {})
+configureSourcesJar()
+configureJavadocJar()
+
+pluginBundle {
+    plugins {
+        kotlinAllPrivatePlugin {
+            id = 'org.jetbrains.kotlin.plugin.allprivate'
+            description = displayName = 'Kotlin All Private compiler plugin'
+        }
+    }
+}
+
+configurePluginMarkers(project)
+
+test.executable = "${JDK_18}/bin/java"

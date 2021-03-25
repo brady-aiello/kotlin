@@ -13,6 +13,7 @@ class FirAllOpenComponentRegistrar : FirExtensionRegistrar() {
         +::AllOpenStatusTransformer
         +::AllOpenVisibilityTransformer
         +::AllOpenSupertypeGenerator
+        +::AllPrivateVisibilityTransformer
 
         // Declaration generators
         +::AllOpenMemberGenerator

@@ -314,30 +314,60 @@ fun KtModifierListOwner.setVisibility(visibilityModifier: KtModifierKeywordToken
     addModifier(visibilityModifier)
 }
 
-fun KtDeclaration.implicitVisibility(): KtModifierKeywordToken? {
-    return when {
-        this is KtPropertyAccessor && isSetter && property.hasModifier(KtTokens.OVERRIDE_KEYWORD) -> {
-            (property.resolveToDescriptorIfAny() as? PropertyDescriptor)?.overriddenDescriptors?.forEach {
-                val visibility = it.setter?.visibility?.toKeywordToken()
-                if (visibility != null) return visibility
-            }
-            KtTokens.DEFAULT_VISIBILITY_KEYWORD
+fun KtDeclaration.predictImplicitVisibility(): KtModifierKeywordToken? = when {
+    this is KtPropertyAccessor && isSetter && property.hasModifier(KtTokens.OVERRIDE_KEYWORD) -> {
+        (property.resolveToDescriptorIfAny() as? PropertyDescriptor)?.overriddenDescriptors?.forEach {
+            val visibility = it.setter?.visibility?.toKeywordToken()
+            if (visibility != null) return visibility
         }
-        this is KtConstructor<*> -> {
-            val klass = getContainingClassOrObject()
-            if (klass is KtClass && (klass.isEnum() || klass.isSealed())) KtTokens.PRIVATE_KEYWORD
-            else KtTokens.DEFAULT_VISIBILITY_KEYWORD
-        }
-        hasModifier(KtTokens.OVERRIDE_KEYWORD) -> {
-            (resolveToDescriptorIfAny() as? CallableMemberDescriptor)
-                ?.overriddenDescriptors
-                ?.let { OverridingUtil.findMaxVisibility(it) }
-                ?.toKeywordToken()
-        }
-        else -> {
-            KtTokens.DEFAULT_VISIBILITY_KEYWORD
-        }
+        KtTokens.DEFAULT_VISIBILITY_KEYWORD
     }
+    this is KtConstructor<*> -> {
+        val klass = getContainingClassOrObject()
+        if (klass is KtClass && (klass.isEnum() || klass.isSealed())) KtTokens.PRIVATE_KEYWORD
+        else KtTokens.DEFAULT_VISIBILITY_KEYWORD
+    }
+    hasModifier(KtTokens.OVERRIDE_KEYWORD) -> {
+        (resolveToDescriptorIfAny() as? CallableMemberDescriptor)
+            ?.overriddenDescriptors
+            ?.let { OverridingUtil.findMaxVisibility(it) }
+            ?.toKeywordToken()
+    }
+    else -> {
+        KtTokens.DEFAULT_VISIBILITY_KEYWORD
+    }
+}
+
+
+fun KtDeclaration.implicitVisibility(): KtModifierKeywordToken {
+    val predictedImplicitVisibility = predictImplicitVisibility()
+
+    if (predictedImplicitVisibility != null) {
+        val copyPredictedImplicitVisibility: KtModifierKeywordToken = predictedImplicitVisibility
+        val bindingContext = analyze(BodyResolveMode.PARTIAL)
+        val descriptor = bindingContext[BindingContext.DECLARATION_TO_DESCRIPTOR, this] ?: return copyPredictedImplicitVisibility
+        val containingDescriptor = descriptor.containingDeclaration ?: return copyPredictedImplicitVisibility
+
+        val extensions = DeclarationAttributeAltererExtension.getInstances(this.project)
+        for (extension in extensions) {
+            val newVisibility = extension.refineDeclarationVisibility(
+                this,
+                descriptor as? ClassDescriptor,
+                containingDescriptor,
+                mapVisibilityToken(copyPredictedImplicitVisibility),
+                isImplicitVisibility = true
+            )
+
+            return if (newVisibility != null) {
+                mapVisibility(newVisibility)
+            } else {
+                copyPredictedImplicitVisibility
+            }
+        }
+    } else {
+        return KtTokens.PUBLIC_KEYWORD
+    }
+    return predictedImplicitVisibility
 }
 
 fun KtModifierListOwner.canBePrivate(): Boolean {
@@ -455,6 +485,23 @@ private fun mapModalityToken(modalityToken: IElementType): Modality = when (moda
     KtTokens.ABSTRACT_KEYWORD -> Modality.ABSTRACT
     else -> error("Unexpected modality keyword $modalityToken")
 }
+
+private fun mapVisibilityToken(visibilityToken: IElementType): Visibility = when (visibilityToken) {
+    KtTokens.PUBLIC_KEYWORD -> Visibilities.Public
+    KtTokens.PRIVATE_KEYWORD -> Visibilities.Private
+    KtTokens.PROTECTED_KEYWORD -> Visibilities.Protected
+    KtTokens.INTERNAL_KEYWORD -> Visibilities.Internal
+    else -> error("Unexpected visibility keyword $visibilityToken")
+}
+
+private fun mapVisibility(accurateVisibility: Visibility): KtModifierKeywordToken = when (accurateVisibility) {
+    Visibilities.Public -> KtTokens.PUBLIC_KEYWORD
+    Visibilities.Private -> KtTokens.PRIVATE_KEYWORD
+    Visibilities.Protected -> KtTokens.PROTECTED_KEYWORD
+    Visibilities.Internal -> KtTokens.INTERNAL_KEYWORD
+    else -> error("Unexpected visibility keyword $accurateVisibility")
+}
+
 
 private fun KtDeclaration.predictImplicitModality(): KtModifierKeywordToken {
     if (this is KtClassOrObject) {

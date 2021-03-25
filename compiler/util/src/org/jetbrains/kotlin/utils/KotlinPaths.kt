@@ -62,6 +62,9 @@ interface KotlinPaths {
     val allOpenPluginJarPath: File
         get() = jar(Jar.AllOpenPlugin)
 
+    val allPrivatePluginJarPath: File
+        get() = jar(Jar.AllPrivatePlugin)
+
 //    @Deprecated("Obsolete API", ReplaceWith("jar(KotlinPaths.Jars.noArgPlugin)"))
     val noArgPluginJarPath: File
         get() = jar(Jar.NoArgPlugin)
@@ -92,6 +95,7 @@ interface KotlinPaths {
         JsStdLib(PathUtil.JS_LIB_NAME),
         JsKotlinTest(PathUtil.KOTLIN_TEST_JS_NAME),
         AllOpenPlugin(PathUtil.ALLOPEN_PLUGIN_NAME),
+        AllPrivatePlugin(PathUtil.ALLPRIVATE_PLUGIN_NAME),
         NoArgPlugin(PathUtil.NOARG_PLUGIN_NAME),
         SamWithReceiver(PathUtil.SAM_WITH_RECEIVER_PLUGIN_NAME),
         SerializationPlugin(PathUtil.SERIALIZATION_PLUGIN_NAME),

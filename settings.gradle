@@ -205,6 +205,8 @@ include ":benchmarks",
         ":plugins:android-extensions-ide",
         ":kotlin-allopen-compiler-plugin",
         ":allopen-ide-plugin",
+        ":kotlin-allprivate-compiler-plugin",
+        ":allprivate-ide-plugin",
         ":kotlin-noarg-compiler-plugin",
         ":noarg-ide-plugin",
         ":kotlin-sam-with-receiver-compiler-plugin",
@@ -254,6 +256,7 @@ include ":benchmarks",
         ":kotlin-gradle-plugin-test-utils-embeddable",
         ":kotlin-gradle-plugin-integration-tests",
         ":kotlin-allopen",
+        ":kotlin-allprivate",
         ":kotlin-noarg",
         ":kotlin-sam-with-receiver",
         ":kotlin-gradle-subplugin-example",
@@ -348,6 +351,8 @@ include ":plugins:parcelize:parcelize-compiler",
 include ":prepare:ide-plugin-dependencies:android-extensions-compiler-plugin-for-ide",
         ":prepare:ide-plugin-dependencies:allopen-compiler-plugin-for-ide",
         ":prepare:ide-plugin-dependencies:allopen-compiler-plugin-tests-for-ide",
+        ":prepare:ide-plugin-dependencies:allprivate-compiler-plugin-for-ide",
+        ":prepare:ide-plugin-dependencies:allprivate-compiler-plugin-tests-for-ide",
         ":prepare:ide-plugin-dependencies:incremental-compilation-impl-tests-for-ide",
         ":prepare:ide-plugin-dependencies:kotlin-build-common-tests-for-ide",
         ":prepare:ide-plugin-dependencies:kotlin-compiler-for-ide",
@@ -506,6 +511,8 @@ project(':kotlin-android-extensions-runtime').projectDir = "$rootDir/plugins/and
 project(':plugins:android-extensions-ide').projectDir = "$rootDir/plugins/android-extensions/android-extensions-idea" as File
 project(':kotlin-allopen-compiler-plugin').projectDir = "$rootDir/plugins/allopen/allopen-cli" as File
 project(':allopen-ide-plugin').projectDir = "$rootDir/plugins/allopen/allopen-ide" as File
+project(':kotlin-allprivate-compiler-plugin').projectDir = "$rootDir/plugins/allprivate/allprivate-cli" as File
+project(':allprivate-ide-plugin').projectDir = "$rootDir/plugins/allprivate/allprivate-ide" as File
 project(':kotlin-noarg-compiler-plugin').projectDir = "$rootDir/plugins/noarg/noarg-cli" as File
 project(':noarg-ide-plugin').projectDir = "$rootDir/plugins/noarg/noarg-ide" as File
 project(':kotlin-sam-with-receiver-compiler-plugin').projectDir = "$rootDir/plugins/sam-with-receiver/sam-with-receiver-cli" as File
@@ -521,6 +528,7 @@ project(':kotlin-gradle-plugin-model').projectDir = "$rootDir/libraries/tools/ko
 project(':kotlin-gradle-plugin-test-utils-embeddable').projectDir = "$rootDir/libraries/tools/kotlin-gradle-plugin-test-utils-embeddable" as File
 project(':kotlin-gradle-plugin-integration-tests').projectDir = "$rootDir/libraries/tools/kotlin-gradle-plugin-integration-tests" as File
 project(':kotlin-allopen').projectDir = "$rootDir/libraries/tools/kotlin-allopen" as File
+project(':kotlin-allprivate').projectDir = "$rootDir/libraries/tools/kotlin-allprivate" as File
 project(':kotlin-noarg').projectDir = "$rootDir/libraries/tools/kotlin-noarg" as File
 project(':kotlin-sam-with-receiver').projectDir = "$rootDir/libraries/tools/kotlin-sam-with-receiver" as File
 project(':kotlin-gradle-subplugin-example').projectDir = "$rootDir/libraries/examples/kotlin-gradle-subplugin-example" as File
